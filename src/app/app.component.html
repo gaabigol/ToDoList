@@ -9,6 +9,7 @@
   <body>
     <h1>{{ title }}</h1>
     <ul>
+      <p *ngIf="todos.length == 0"><Small>Ainda não tem nenhuma tarefa</Small></p>
       <li *ngFor="let todo of todos">
         {{ todo.id }} . {{ todo.title }}
         <button *ngIf="!todo.done" (click)="markAsDone(todo)">CONCULIR</button>|
@@ -24,7 +25,7 @@
         <small *ngIf="form.controls['title'].invalid && !form.controls['title'].pristine">
           Este campo deve conter entre 3 e 60 caracteres
         </small>
-        <button [disabled]="form.invalid">Salvar</button>
+        <button [disabled]="form.invalid" (click)="add()">Salvar</button>
       </fieldset>
     </form>
   </body>
