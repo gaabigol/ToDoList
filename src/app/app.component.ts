@@ -5,16 +5,14 @@ import { Todo } from 'src/models/todo.models';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  public mode = '';
   public todos: Todo[] = [];
-  public title: string = 'Minhas Tarefas';
   public form: FormGroup;
-  
+  public mode: String = 'list';
 
-  constructor(private fb: FormBuilder){
+  constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
       title: ['', Validators.compose([
         Validators.minLength(3),
@@ -22,61 +20,56 @@ export class AppComponent {
         Validators.required,
       ])]
     });
+
     this.load();
   }
 
-  add (){
+  changeMode(mode: String) {
+    this.mode = mode;
+  }
+
+  add() {
     const title = this.form.controls['title'].value;
     const id = this.todos.length + 1;
     this.todos.push(new Todo(id, title, false));
     this.save();
     this.clear();
+    this.changeMode('list');
   }
 
-  clear(){
+  clear() {
     this.form.reset();
   }
 
-  remove (todo: Todo){
+  remove(todo: Todo) {
     const index = this.todos.indexOf(todo);
-    if(index !== -1){
+    if (index !== -1) {
       this.todos.splice(index, 1);
     }
     this.save();
   }
 
-  markAsDone(todo: Todo){
+  markAsDone(todo: Todo) {
     todo.done = true;
     this.save();
   }
 
-  markAsUndone(todo: Todo){
+  markAsUndone(todo: Todo) {
     todo.done = false;
     this.save();
   }
 
-  
-  save (){
+  save() {
     const data = JSON.stringify(this.todos);
     localStorage.setItem('todos', data);
   }
 
-  load(){
+  load() {
     const data = localStorage.getItem('todos');
     if (data) {
-      try {
-        this.todos = JSON.parse(data);
-      } catch (e) {
-        console.error('Erro ao analisar dados do localStorage:', e);
-      }
+      this.todos = JSON.parse(data);
+    } else {
+      this.todos = [];
     }
-  }   
-
-  changeMode(mode: String){
-    mode = this.mode;
-
   }
-
-
-
 }
